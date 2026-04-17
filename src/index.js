@@ -1,5 +1,5 @@
 const lcjs = require('@lightningchart/lcjs')
-const { lightningChart, AxisTickStrategies, PalettedFill, LUT, ColorCSS, PointStyle3D, } = lcjs
+const { lightningChart, Themes, AxisTickStrategies, PalettedFill, LUT, ColorCSS, PointStyle3D } = lcjs
 
 const lc = lightningChart({
             resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
@@ -7,12 +7,25 @@ const lc = lightningChart({
 
 // Create 3D chart
 const chart3D = lc
-    .Chart3D({
-        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
-    })
-    .setTitle('London Air Quality - 3D Time Series')
-    // Set 3D bounding box dimensions to highlight X Axis.
-    .setBoundingBox({ x: 1, y: 0.75, z: 0.75 })
+  .Chart3D({
+    theme: (() => {
+    const t = Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined
+    const smallView = Math.min(window.innerWidth, window.innerHeight) < 500
+    if (!window.__lcjsDebugOverlay) {
+        window.__lcjsDebugOverlay = document.createElement('div')
+        window.__lcjsDebugOverlay.style.cssText = 'position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);color:#fff;padding:4px 8px;z-index:99999;font:12px monospace;pointer-events:none'
+        if (document.body) document.body.appendChild(window.__lcjsDebugOverlay)
+        setInterval(() => {
+            if (!window.__lcjsDebugOverlay.parentNode && document.body) document.body.appendChild(window.__lcjsDebugOverlay)
+            window.__lcjsDebugOverlay.textContent = window.innerWidth + 'x' + window.innerHeight + ' dpr=' + window.devicePixelRatio + ' small=' + (Math.min(window.innerWidth, window.innerHeight) < 500)
+        }, 500)
+    }
+    return t && smallView ? lcjs.scaleTheme(t, 0.5) : t
+})(),
+  })
+  .setTitle('London Air Quality - 3D Time Series')
+  // Set 3D bounding box dimensions to highlight X Axis.
+  .setBoundingBox({ x: 1, y: 0.75, z: 0.75 })
 
 // Set Axis titles
 chart3D.getDefaultAxisX().setTitle('Time')
@@ -39,14 +52,14 @@ fetch(document.head.baseURI + 'examples/assets/1709/waterlooplace_airquality.jso
 
     series.setPointStyle(new PointStyle3D.Triangulated({
     fillStyle: new PalettedFill({
-        lookUpProperty: 'y',
-        lut: new LUT({
-            interpolate: true,
-            steps: [
-                { value: A, color: ColorCSS('green') },
-                { value: B, color: ColorCSS('red') },
-            ]
-        })
+      lookUpProperty: 'y',
+      lut: new LUT({
+        interpolate: true,
+        steps: [
+          { value: A, color: ColorCSS('green') },
+          { value: B, color: ColorCSS('red') },
+        ]
+      })
     }),
     size: 10,
     shape: 'sphere'
@@ -65,13 +78,13 @@ fetch(document.head.baseURI + 'examples/assets/1709/waterlooplace_airquality.jso
 
     for (let i = 0; i < data.length; i++) {
       if (data[i].no2 > 65) {
-          pointSize = 32
+        pointSize = 32
       }
       else if (data[i].no2 > 45) {
-          pointSize = 20
+        pointSize = 20
       }
       else if (data[i].no2 > 25) {    //WHO 24-hour NO2 guideline: 25 µg/m³
-          pointSize = 10
+        pointSize = 10
       }
       else {
         pointSize = 6
