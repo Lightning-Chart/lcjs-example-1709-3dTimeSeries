@@ -24,26 +24,10 @@ Together, these visual changes make it easy to perceive how shifts in one pollut
 
 The example also demonstrates proper configuration of a **UTC DateTime axis** in **3D charts**.
 
-In XY charts, it is enough just to set axis type as "linear-highPrecision" when using UTC timestamps. However, this feature is not supported by 3D charts. 
-Instead, "date time origin shift" approach has to be used. It means manually shifting timestamps data closer to 0. This is ultimately required due to low webgl number precision.
-
-```javascript
-const dateOrigin = new Date(data[0].gps_timestamp) // usually can also be set to just new Date(), i.e. current date
-const dateOriginTime = dateOrigin.getTime()
-chart.axisX.setTickStrategy(AxisTickStrategies.DateTime, strategy => strategy
-    .setDateOrigin(dateOrigin)
-)
-
-series.add(data.map(p => ({
-  x: p.x - dateOriginTime,
-  y: p.y,
-  z: p.z
-})))
-```
-
 The data used in this example: [OpenAQ Air Quality Data](https://explore.openaq.org/locations/270693)
 Location: Waterloo Place (The Crown Estate), London, UK
 Time period: November 2–30, 2025
+
 
 ## API Links
 
@@ -75,9 +59,9 @@ Direct developer email support can be purchased through a [Support Plan][4] or b
 © LightningChart Ltd 2009-2026. All rights reserved.
 
 
-[3D chart]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/classes/Chart3D.html
-[3D point series]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/classes/PointSeries3D.html
-[Axis tick strategies]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/variables/AxisTickStrategies.html
-[LUT]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/classes/LUT.html
-[Point styles]: https://lightningchart.com/js-charts/api-documentation/v8.3.0/variables/PointStyle3D.html
+[3D chart]: https://lightningchart.com/js-charts/api-documentation/v9.0.0/classes/Chart3D.html
+[3D point series]: https://lightningchart.com/js-charts/api-documentation/v9.0.0/classes/PointSeries3D.html
+[Axis tick strategies]: https://lightningchart.com/js-charts/api-documentation/v9.0.0/variables/AxisTickStrategies.html
+[LUT]: https://lightningchart.com/js-charts/api-documentation/v9.0.0/classes/LUT.html
+[Point styles]: https://lightningchart.com/js-charts/api-documentation/v9.0.0/variables/PointStyle3D.html
 
